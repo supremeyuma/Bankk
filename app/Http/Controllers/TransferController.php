@@ -20,20 +20,17 @@ class TransferController extends Controller
      */
     public function showForm()
     {
-        // Check if the user is authenticated
         $user = auth()->user();
 
-        if (!$user) {
-            // If not logged in, redirect to login page (or handle differently)
-            return redirect()->route('login')->with('error', 'You need to be logged in.');
-        }
+        // Get only this user's accounts for the sender dropdown
+        $senderAccounts = $user->accounts;
 
-        // Fetch accounts for the authenticated user
-        $accounts = $user->accounts;
+        // Get all accounts for the recipient dropdown
+        $allAccounts = \App\Models\Account::all();
 
-        // Pass the accounts to the view
-        return view('transfer.form', compact('accounts'));
+        return view('transfer.form', compact('senderAccounts', 'allAccounts'));
     }
+
 
 
 

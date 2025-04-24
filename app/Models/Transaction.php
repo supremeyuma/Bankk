@@ -9,6 +9,13 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'sender_account_id',
+        'recipient_account_id',
+        'amount',
+        'type', // 👈 Add this line
+    ];
+
     protected $casts = [
         'recipient_details' => 'array',
     ];
