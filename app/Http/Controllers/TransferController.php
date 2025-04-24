@@ -20,8 +20,22 @@ class TransferController extends Controller
      */
     public function showForm()
     {
-        return view('transfer.form');  // Create this view to display the form
+        // Check if the user is authenticated
+        $user = auth()->user();
+
+        if (!$user) {
+            // If not logged in, redirect to login page (or handle differently)
+            return redirect()->route('login')->with('error', 'You need to be logged in.');
+        }
+
+        // Fetch accounts for the authenticated user
+        $accounts = $user->accounts;
+
+        // Pass the accounts to the view
+        return view('transfer.form', compact('accounts'));
     }
+
+
 
     /**
      * Handle the internal transfer.

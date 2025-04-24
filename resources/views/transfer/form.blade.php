@@ -18,12 +18,17 @@
 <form action="{{ route('transfer.handle') }}" method="POST">
     @csrf
     <div>
-        <label for="sender_account_id">Sender Account</label>
-        <select name="sender_account_id" id="sender_account_id">
+    <label for="sender_account_id">Sender Account</label>
+
+    <select name="sender_account_id" id="sender_account_id">
+        @if($accounts->isEmpty())
+            <option value="">No accounts available</option>
+        @else
             @foreach($accounts as $account)
                 <option value="{{ $account->id }}">{{ $account->account_number }} (Balance: ${{ $account->balance }})</option>
             @endforeach
-        </select>
+        @endif
+    </select>
     </div>
 
     <div>
