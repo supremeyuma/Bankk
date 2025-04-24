@@ -21,7 +21,7 @@
     <div>
         <label for="sender_account_id">Sender Account</label>
         <<select name="sender_account_id" id="sender_account_id">
-            @foreach($senderAccounts as $account)
+            @foreach($accounts as $account)
                 <option value="{{ $account->id }}">{{ $account->account_number }} (Balance: ${{ $account->balance }})</option>
             @endforeach
         </select>
@@ -46,7 +46,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const allAccounts = @json($allAccounts);
+        const allAccounts = @json($accounts);
         const senderSelect = document.getElementById('sender_account_id');
         const recipientSelect = document.getElementById('recipient_account_id');
 
@@ -62,7 +62,7 @@
             if (filtered.length === 0) {
                 const option = document.createElement('option');
                 option.value = '';
-                option.text = 'No recipient accounts available';
+                option.text = 'You have only one account.';
                 recipientSelect.appendChild(option);
             }
 

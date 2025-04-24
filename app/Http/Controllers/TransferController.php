@@ -23,12 +23,9 @@ class TransferController extends Controller
         $user = auth()->user();
 
         // Get only this user's accounts for the sender dropdown
-        $senderAccounts = $user->accounts;
+        $accounts = $user->accounts;
 
-        // Get all accounts for the recipient dropdown
-        $allAccounts = \App\Models\Account::all();
-
-        return view('transfer.form', compact('senderAccounts', 'allAccounts'));
+        return view('transfer.form', compact('accounts'));
     }
 
 

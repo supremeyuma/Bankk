@@ -18,6 +18,13 @@ class TransferService
      */
     public function transferFunds(Account $senderAccount, Account $recipientAccount, float $amount): bool
     {
+        $user = auth()->user();
+
+        // Make sure both accounts belong to the same user
+        if ($senderAccount->user_id !== $user->id || $recipientAccount->user_id !== $user->id) {
+            throw new Exception('You can only transfer between your own accounts.');
+        }
+
         // Check if sender has enough funds
         if ($senderAccount->balance < $amount) {
             throw new Exception('Insufficient funds');
@@ -37,7 +44,7 @@ class TransferService
             'amount' => $amount,
             'currency' => 'USD',  // Change if supporting multiple currencies
             'recipient_account_id' => $recipientAccount->id,
-            'description' => 'Transfer to ' . $recipientAccount->account_number,
+            'description' => 'Internal Transfer to ' . $recipientAccount->account_number,
         ]);
 
         $recipientAccount->transactions()->create([
@@ -45,7 +52,7 @@ class TransferService
             'amount' => $amount,
             'currency' => 'USD',
             'recipient_account_id' => null,  // No recipient for the sender
-            'description' => 'Transfer from ' . $senderAccount->account_number,
+            'description' => 'Internal Transfer from ' . $senderAccount->account_number,
         ]);
 
         return true;
