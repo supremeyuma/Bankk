@@ -30,8 +30,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/transfer', [TransferController::class, 'showForm'])->name('transfer.form');
+Route::get('/transfer', [TransferController::class, 'showTransferForm'])->name('transfer.form');
 Route::post('/transfer', [TransferController::class, 'handleTransfer'])->name('transfer.handle');
+
+
+Route::get('/api/accounts/{account_number}', [\App\Http\Controllers\AccountController::class, 'getAccountByNumber']);
+
+Route::get('/accounts/lookup/{accountNumber}', [\App\Http\Controllers\AccountController::class, 'getAccountByNumber'])
+    ->middleware('auth')
+    ->name('accounts.lookup');
 
 
 require __DIR__.'/auth.php';

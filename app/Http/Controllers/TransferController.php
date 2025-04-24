@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Transaction;
 use App\Services\TransferService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransferController extends Controller
 {
@@ -15,47 +17,47 @@ class TransferController extends Controller
         $this->transferService = $transferService;
     }
 
-    /**
-     * Show the transfer form.
-     */
-    public function showForm()
+    public function showTransferForm()
     {
-        $user = auth()->user();
-
-        // Get only this user's accounts for the sender dropdown
+        $user = Auth::user();
         $accounts = $user->accounts;
-
+        
         return view('transfer.form', compact('accounts'));
     }
 
-
-
-
-    /**
-     * Handle the internal transfer.
-     */
     public function handleTransfer(Request $request)
     {
-        // Validate form input
-        $request->validate([
+        $validated = $request->validate([
+            'transfer_type' => 'required|in:self,other',
             'sender_account_id' => 'required|exists:accounts,id',
-            'recipient_account_id' => 'required|exists:accounts,id|different:sender_account_id',
             'amount' => 'required|numeric|min:1',
+            'pin' => 'required|digits:4', // Assuming a 4-digit PIN
         ]);
 
-        $senderAccount = Account::find($request->sender_account_id);
-        $recipientAccount = Account::find($request->recipient_account_id);
-        $amount = $request->amount;
+        $senderAccount = Account::findOrFail($request->sender_account_id);
+        $user = Auth::user();
 
+        // Verify the user's pin
+        if ($user->pin !== $request->pin) {
+            return back()->with('error', 'Incorrect PIN.');
+        }
+
+        // Handle the transfer
         try {
-            // Perform the transfer
-            $this->transferService->transferFunds($senderAccount, $recipientAccount, $amount);
+            if ($request->transfer_type == 'self') {
+                $recipientAccount = Account::findOrFail($request->recipient_account_id);
+                $this->transferService->transferFunds($senderAccount, $recipientAccount, $request->amount);
+            } elseif ($request->transfer_type == 'other') {
+                $recipientAccount = Account::where('account_number', $request->recipient_account_number)->first();
+                if (!$recipientAccount) {
+                    return back()->with('error', 'Recipient account not found.');
+                }
+                $this->transferService->transferFunds($senderAccount, $recipientAccount, $request->amount);
+            }
 
-            // Redirect or return success
-            return redirect()->route('transfer.form')->with('success', 'Transfer successful!');
+            return back()->with('success', 'Transfer successful.');
         } catch (\Exception $e) {
-            // Return error message
-            return redirect()->route('transfer.form')->with('error', $e->getMessage());
+            return back()->with('error', $e->getMessage());
         }
     }
 }
