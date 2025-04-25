@@ -33,7 +33,7 @@
     </div>
 
     {{-- Self-transfer --}}
-    <div id="self_transfer_fields">
+    <div id="self_transfer_fields" class="hidden">
         <label for="recipient_account_id">Recipient Account</label>
         <select name="recipient_account_id" id="recipient_account_id">
             <!-- Will be populated by JavaScript -->
@@ -41,13 +41,14 @@
     </div>
 
     {{-- Other-user transfer --}}
-    <div id="other_transfer_fields" class="hidden">
+    <div id="other_transfer_fields" class="hidden other-fields">
         <label for="recipient_account_number">Recipient Account Number</label>
         <input type="text" name="recipient_account_number" id="recipient_account_number">
 
         <button type="button" onclick="verifyAccount()">Verify</button>
         <p id="account_name_display" style="margin-top: 5px;"></p>
     </div>
+
 
     <div>
         <label for="amount">Amount</label>
@@ -62,6 +63,7 @@
     <button type="submit">Transfer</button>
 </form>
 
+
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -71,7 +73,6 @@
         const transferTypeSelect = document.getElementById('transfer_type');
         const selfFields = document.getElementById('self_transfer_fields');
         const otherFields = document.getElementById('other_transfer_fields');
-
         const recipientNumberInput = document.getElementById('recipient_account_number');
         const nameDisplay = document.getElementById('account_name_display');
 
@@ -98,12 +99,13 @@
         function toggleTransferType() {
             const type = transferTypeSelect.value;
 
-            selfFields.classList.toggle('hidden', type !== 'self');
-            otherFields.classList.toggle('hidden', type !== 'other');
-
             if (type === 'self') {
+                selfFields.classList.remove('hidden');
+                otherFields.classList.add('hidden');
                 updateRecipientOptions();
             } else {
+                selfFields.classList.add('hidden');
+                otherFields.classList.remove('hidden');
                 recipientNumberInput.value = '';
                 nameDisplay.textContent = '';
             }
@@ -127,16 +129,26 @@
             } catch (e) {
                 nameDisplay.textContent = `Error checking account`;
             }
-        }
+        };
 
-        // Trigger verification on blur event
-        recipientNumberInput.addEventListener('blur', verifyAccount);
-
+        recipientNumberInput.addEventListener('blur', window.verifyAccount);
         transferTypeSelect.addEventListener('change', toggleTransferType);
         senderSelect.addEventListener('change', updateRecipientOptions);
-        toggleTransferType(); // initialize
+
+        // Fire once when the page loads
+        toggleTransferType();
     });
+
+    console.log('Transfer script loaded')
 </script>
+@endpush
+
+@push('styles')
+<style>
+    .hidden {
+        display: none !important;
+    }
+</style>
 @endpush
 
 @endsection
