@@ -7,6 +7,8 @@ use App\Models\Transaction;
 use App\Services\TransferService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 
 class TransferController extends Controller
 {
@@ -38,8 +40,8 @@ class TransferController extends Controller
         $user = Auth::user();
 
         // Verify the user's pin
-        if ($user->pin !== $request->pin) {
-            return back()->with('error', 'Incorrect PIN.');
+        if (!Hash::check($request->pin, $user->pin)) {
+            return back()->with('error', 'Incorrect PIN');
         }
 
         // Handle the transfer

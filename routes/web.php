@@ -40,5 +40,12 @@ Route::get('/accounts/lookup/{accountNumber}', [\App\Http\Controllers\AccountCon
     ->middleware('auth')
     ->name('accounts.lookup');
 
+Route::get('/set-pin', [UserController::class, 'showPinForm'])->middleware('auth');
+Route::post('/set-pin', [UserController::class, 'storePin'])->middleware('auth');
+
+
+Route::get('/admin/set-pin', [App\Http\Controllers\Admin\UserPinController::class, 'showForm'])->name('admin.setPinForm');
+Route::post('/admin/set-pin', [App\Http\Controllers\Admin\UserPinController::class, 'setPin'])->name('admin.setPin');
+
 
 require __DIR__.'/auth.php';
