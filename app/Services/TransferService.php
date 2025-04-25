@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Account;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class TransferService
 {
@@ -11,84 +12,74 @@ class TransferService
     {
         $user = auth()->user();
 
-        // Ensure both sender and recipient belong to the same user for self transfer
-        if ($senderAccount->user_id !== $user->id || $recipientAccount->user_id !== $user->id) {
-            throw new Exception('You can only transfer betweens your own accounts.');
-        }
+        return DB::transaction(function () use ($user, $senderAccount, $recipientAccount, $amount) {
+            if ($senderAccount->user_id !== $user->id || $recipientAccount->user_id !== $user->id) {
+                throw new \Exception('You can only transfer between your own accounts.');
+            }
 
-        // Check if sender has enough funds
-        if ($senderAccount->balance < $amount) {
-            throw new Exception('Insufficient funds.');
-        }
+            if ($senderAccount->balance < $amount) {
+                throw new \Exception('Insufficient funds.');
+            }
 
-        // Deduct from sender account and add to recipient account
-        $senderAccount->balance -= $amount;
-        $recipientAccount->balance += $amount;
+            $senderAccount->decrement('balance', $amount);
+            $recipientAccount->increment('balance', $amount);
 
-        // Save updated accounts
-        $senderAccount->save();
-        $recipientAccount->save();
+            $senderAccount->transactions()->create([
+                'type' => 'internal_transfer',
+                'amount' => $amount,
+                'currency' => 'USD',
+                'recipient_account_id' => $recipientAccount->account_number,
+                'description' => 'Transfer to ' . $recipientAccount->account_number,
+            ]);
 
-        // Log the transactions
-        $senderAccount->transactions()->create([
-            'type' => 'internal_transfer',
-            'amount' => $amount,
-            'currency' => 'USD',
-            'recipient_account_id' => $recipientAccount->account_number,
-            'description' => 'Transfer to ' . $recipientAccount->account_number,
-        ]);
+            $recipientAccount->transactions()->create([
+                'type' => 'internal_transfer',
+                'amount' => $amount,
+                'currency' => 'USD',
+                'sender_account_id' => $senderAccount->account_number,
+                'description' => 'Transfer from ' . $senderAccount->account_number,
+            ]);
 
-        $recipientAccount->transactions()->create([
-            'type' => 'internal_transfer',
-            'amount' => $amount,
-            'currency' => 'USD',
-            'sender_account_id' => $senderAccount->account_number, // No recipient for the sender
-            'description' => 'Transfer from ' . $senderAccount->account_number,
-        ]);
-
-        return true;
+            return true;
+        });
     }
+
 
 
     public function transferToOtherUsers(Account $senderAccount, Account $recipientAccount, float $amount): bool
     {
         $user = auth()->user();
 
-        // Ensure both sender and recipient belong to the same user for self transfer
-        if ($senderAccount->user_id === $recipientAccount->user_id) {
-            throw new Exception('Use self-transfer your own accounts.');
-        }
+        return DB::transaction(function () use ($user, $senderAccount, $recipientAccount, $amount) {
+            if ($senderAccount->user_id === $recipientAccount->user_id) {
+                throw new \Exception('Use self-transfer to send to your own accounts.');
+            }
 
-        // Check if sender has enough funds
-        if ($senderAccount->balance < $amount) {
-            throw new Exception('Insufficient funds.');
-        }
+            if ($senderAccount->balance < $amount) {
+                throw new \Exception('Insufficient funds.');
+            }
 
-        // Deduct from sender account and add to recipient account
-        $senderAccount->balance -= $amount;
-        $recipientAccount->balance += $amount;
+            $senderAccount->decrement('balance', $amount);
+            $recipientAccount->increment('balance', $amount);
 
-        // Save updated accounts
-        $senderAccount->save();
-        $recipientAccount->save();
+            $senderAccount->transactions()->create([
+                'type' => 'internal_transfer',
+                'amount' => $amount,
+                'currency' => 'USD',
+                'recipient_account_id' => $recipientAccount->account_number,
+                'description' => 'Transfer to ' . $recipientAccount->account_number,
+            ]);
 
-        // Log the transactions
-        $senderAccount->transactions()->create([
-            'type' => 'internal_transfer',
-            'amount' => $amount,
-            'currency' => 'USD',
-            'recipient_account_id' => $recipientAccount->account_number,
-            'description' => 'Transfer to ' . $recipientAccount->account_number,
-        ]);
+            $recipientAccount->transactions()->create([
+                'type' => 'internal_transfer',
+                'amount' => $amount,
+                'currency' => 'USD',
+                'sender_account_id' => $senderAccount->account_number,
+                'description' => 'Transfer from ' . $senderAccount->account_number,
+            ]);
 
-        $recipientAccount->transactions()->create([
-            'type' => 'internal_transfer',
-            'amount' => $amount,
-            'currency' => 'USD',
-            'sender_account_id' => $senderAccount->account_number, // No recipient for the sender
-            'description' => 'Transfer from ' . $senderAccount->account_number,
-        ]);
-
-        return true;
+            return true;
+        });
     }
+
 }
