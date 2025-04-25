@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Models\Account;
+use App\Models\Transfer;
+
 use Exception;
 use Illuminate\Support\Facades\DB;
+
 
 class TransferService
 {
@@ -38,6 +41,13 @@ class TransferService
                 'currency' => 'USD',
                 'sender_account_id' => $senderAccount->account_number,
                 'description' => 'Transfer from ' . $senderAccount->account_number,
+            ]);
+
+            Transfer::create([
+                'sender_account_id' => $senderAccount->id,
+                'recipient_account_id' => $recipientAccount->id,
+                'amount' => $amount,
+                'type' => 'self',
             ]);
 
             return true;
@@ -76,6 +86,13 @@ class TransferService
                 'currency' => 'USD',
                 'sender_account_id' => $senderAccount->account_number,
                 'description' => 'Transfer from ' . $senderAccount->account_number,
+            ]);
+
+            Transfer::create([
+                'sender_account_id' => $senderAccount->id,
+                'recipient_account_id' => $recipientAccount->id,
+                'amount' => $amount,
+                'type' => 'others',
             ]);
 
             return true;
