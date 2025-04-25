@@ -13,7 +13,7 @@
     <!-- Navigation or Sidebar -->
     <nav>
     <ul>
-        <li><a href="{{ route('dashboard') }}">Home</a></li>
+        <li><a href="{{ route('user.dashboard') }}">Home</a></li>
         <li><a href="{{ route('user.transfer.form') }}">Transfer</a></li>
 
         <!-- Logout Form as a link -->
