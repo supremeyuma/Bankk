@@ -12,12 +12,20 @@
 
     <!-- Navigation or Sidebar -->
     <nav>
-        <ul>
-            <li><a href="{{ route('dashboard') }}">Home</a></li>
-            <li><a href="{{ route('transfer.form') }}">Transfer</a></li>
-            
-            <!-- Add more links as necessary -->
-        </ul>
+    <ul>
+        <li><a href="{{ route('dashboard') }}">Home</a></li>
+        <li><a href="{{ route('transfer.form') }}">Transfer</a></li>
+
+        <!-- Logout Form as a link -->
+        <li>
+            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" style="background: none; border: none; color: inherit; text-decoration: underline; cursor: pointer;">
+                    Logout
+                </button>
+            </form>
+        </li>
+    </ul>
     </nav>
 
     <!-- Main Content -->
