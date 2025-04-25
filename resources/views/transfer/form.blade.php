@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transfer Funds</title>
-    <style>
-        .hidden { display: none; }
-    </style>
-</head>
-<body>
+@extends('layouts.app')
+
+@section('title', 'Internal Transfer') <!-- Page title -->
+
+@section('content')
 
 <h2>Internal Transfer</h2>
 
@@ -68,6 +62,7 @@
     <button type="submit">Transfer</button>
 </form>
 
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const allAccounts = @json($accounts);
@@ -142,6 +137,6 @@
         toggleTransferType(); // initialize
     });
 </script>
+@endpush
 
-</body>
-</html>
+@endsection
