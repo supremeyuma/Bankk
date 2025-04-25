@@ -74,17 +74,19 @@ class TransferService
 
             $senderAccount->transactions()->create([
                 'type' => 'internal_transfer',
+                'flow' => 'out',
                 'amount' => $amount,
                 'currency' => 'USD',
-                'recipient_account_id' => $recipientAccount->account_number,
+                'recipient_account_id' => $recipientAccount->id,
                 'description' => 'Transfer to ' . $recipientAccount->account_number,
             ]);
 
             $recipientAccount->transactions()->create([
                 'type' => 'internal_transfer',
+                'flow' => 'in',
                 'amount' => $amount,
                 'currency' => 'USD',
-                'sender_account_id' => $senderAccount->account_number,
+                'sender_account_id' => $senderAccount->id,
                 'description' => 'Transfer from ' . $senderAccount->account_number,
             ]);
 

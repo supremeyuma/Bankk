@@ -13,7 +13,10 @@ class Transaction extends Model
         'sender_account_id',
         'recipient_account_id',
         'amount',
-        'type', // 👈 Add this line
+        'type',
+        'flow',
+        'currency',
+        'description',
     ];
 
     protected $casts = [
