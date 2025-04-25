@@ -24,7 +24,7 @@ class TransferController extends Controller
         $user = Auth::user();
         $accounts = $user->accounts;
         
-        return view('transfer.form', compact('accounts'));
+        return view('user.transfer.form', compact('accounts'));
     }
 
     public function handleTransfer(Request $request)

@@ -14,7 +14,7 @@
     <nav>
     <ul>
         <li><a href="{{ route('dashboard') }}">Home</a></li>
-        <li><a href="{{ route('transfer.form') }}">Transfer</a></li>
+        <li><a href="{{ route('user.transfer.form') }}">Transfer</a></li>
 
         <!-- Logout Form as a link -->
         <li>

@@ -12,7 +12,7 @@
     <p style="color: red;">{{ session('error') }}</p>
 @endif
 
-<form action="{{ route('transfer.handle') }}" method="POST">
+<form action="{{ route('user.transfer.handle') }}" method="POST">
     @csrf
 
     <div>

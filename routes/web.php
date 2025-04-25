@@ -31,8 +31,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/transfer', [TransferController::class, 'showTransferForm'])->name('transfer.form');
-Route::post('/transfer', [TransferController::class, 'handleTransfer'])->name('transfer.handle');
+Route::get('/transfer', [TransferController::class, 'showTransferForm'])->name('user.transfer.form');
+Route::post('/transfer', [TransferController::class, 'handleTransfer'])->name('user.transfer.handle');
 
 
 Route::get('/api/accounts/{account_number}', [\App\Http\Controllers\AccountController::class, 'getAccountByNumber']);
