@@ -9,6 +9,14 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    public const TYPES = [
+        'deposit',
+        'withdrawal',
+        'internal_transfer',
+        'domestic_wire',
+        'international_wire',
+    ];
+
     protected $fillable = [
         'sender_account_id',
         'recipient_account_id',
