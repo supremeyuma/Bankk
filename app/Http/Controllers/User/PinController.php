@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 
-class UserController extends Controller
+class PinController extends Controller
 {
     public function showPinForm()
 {
-    return view('users.set_pin');
+    return view('user.set_pin');
 }
 
 public function storePin(Request $request)
