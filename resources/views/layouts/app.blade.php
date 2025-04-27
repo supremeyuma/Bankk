@@ -15,6 +15,8 @@
     <ul>
         <li><a href="{{ route('user.dashboard') }}">Home</a></li>
         <li><a href="{{ route('user.transfer.form') }}">Transfer</a></li>
+        <li><a href="{{ route('user.transfer.wire') }}">Wire Transfer</a></li>
+        <li><a href="{{ route('user.transactions') }}">Transactions</a></li>
 
         <!-- Logout Form as a link -->
         <li>

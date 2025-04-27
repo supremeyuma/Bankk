@@ -13,7 +13,7 @@
 @endif
 
 
-<form action="{{ route('wire.transfer') }}" method="POST">
+<form action="{{ route('user.wire.transfer.store') }}" method="POST">
     @csrf
 
     <!-- Transfer Type -->

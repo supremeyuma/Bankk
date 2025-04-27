@@ -18,6 +18,7 @@ class Transaction extends Model
     ];
 
     protected $fillable = [
+        'account_id',
         'sender_account_id',
         'recipient_account_id',
         'amount',
@@ -25,6 +26,8 @@ class Transaction extends Model
         'flow',
         'currency',
         'description',
+        'recipient_details',
+
     ];
 
     protected $casts = [

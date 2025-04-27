@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\TransferController;
 use App\Http\Controllers\User\PinController;
 use App\Http\Controllers\User\DashboardController;
+use App\Http\Controllers\User\WireTransferController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +37,8 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/transfer', [TransferController::class, 'showTransferForm'])->name('user.transfer.form');
 Route::post('/transfer', [TransferController::class, 'handleTransfer'])->name('user.transfer.handle');
-
+Route::get('/wire-transfer', [WireTransferController::class, 'create'])->name('user.transfer.wire');
+Route::post('/wire-transfer', [WireTransferController::class, 'store'])->name('user.wire.transfer.store');
 
 Route::get('/api/accounts/{account_number}', [\App\Http\Controllers\AccountController::class, 'getAccountByNumber']);
 
