@@ -72,13 +72,18 @@ class TransferService
             $senderAccount->decrement('balance', $amount);
             $recipientAccount->increment('balance', $amount);
 
+            $recipientName = $recipientAccount->user->name ?? 'Unknown User';
+            $senderName = $senderAccount->user->name ?? 'Unknown User';
+
+
+
             $senderAccount->transactions()->create([
                 'type' => 'internal_transfer',
                 'flow' => 'out',
                 'amount' => $amount,
                 'currency' => 'USD',
                 'recipient_account_id' => $recipientAccount->id,
-                'description' => 'Transfer to ' . $recipientAccount->account_number,
+                'description' => 'Transfer to ' . $recipientName,
             ]);
 
             $recipientAccount->transactions()->create([
@@ -87,7 +92,7 @@ class TransferService
                 'amount' => $amount,
                 'currency' => 'USD',
                 'sender_account_id' => $senderAccount->id,
-                'description' => 'Transfer from ' . $senderAccount->account_number,
+                'description' => 'Transfer from ' . $senderName,
             ]);
 
             Transfer::create([

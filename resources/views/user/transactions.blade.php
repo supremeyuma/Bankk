@@ -26,7 +26,7 @@
                     <td>${{ number_format($tx->amount, 2) }}</td>
                     <td>{{ $tx->currency }}</td>
                     <td>{{ $tx->sender_account_id ?? '-' }}</td>
-                    <td>{{ $tx->recipient_account_id ?? '-' }}</td>
+                    <td>{{ $tx->recipientAccount?->account_number ?? '-' }}</td>
                     <td>{{ $tx->description }}</td>
 
                     <td>

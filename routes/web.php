@@ -7,6 +7,8 @@ use App\Http\Controllers\User\TransferController;
 use App\Http\Controllers\User\PinController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\WireTransferController;
+use App\Http\Controllers\User\AccountController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -40,9 +42,9 @@ Route::post('/transfer', [TransferController::class, 'handleTransfer'])->name('u
 Route::get('/wire-transfer', [WireTransferController::class, 'create'])->name('user.transfer.wire');
 Route::post('/wire-transfer', [WireTransferController::class, 'store'])->name('user.wire.transfer.store');
 
-Route::get('/api/accounts/{account_number}', [\App\Http\Controllers\AccountController::class, 'getAccountByNumber']);
+Route::get('/api/accounts/{account_number}', [AccountController::class, 'getAccountByNumber']);
 
-Route::get('/accounts/lookup/{accountNumber}', [\App\Http\Controllers\AccountController::class, 'getAccountByNumber'])
+Route::get('/accounts/lookup/{accountNumber}', [AccountController::class, 'getAccountByNumber'])
     ->middleware('auth')
     ->name('accounts.lookup');
 
